@@ -67,7 +67,7 @@ def setup_logger(name='consultease', level=logging.INFO, log_file=None, log_form
         default_log_file = logs_dir / f'consultease_{timestamp}.log'
         
         file_handler = logging.FileHandler(default_log_file)
-    file_handler.setFormatter(formatter)
+        file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
     
     # Store logger in dictionary

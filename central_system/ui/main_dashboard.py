@@ -9,12 +9,12 @@ It displays faculty availability and allows students to submit consultation requ
 
 import os
 from datetime import datetime
-from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
+from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
                             QPushButton, QFrame, QLineEdit, QTextEdit, QComboBox,
                             QScrollArea, QGridLayout, QSplitter, QGroupBox, 
                             QFormLayout, QMessageBox, QSizePolicy, QSpacerItem)
-from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSize
-from PyQt5.QtGui import QFont, QPixmap, QIcon, QColor
+from PyQt6.QtCore import Qt, QTimer, pyqtSlot, QSize
+from PyQt6.QtGui import QFont, QPixmap, QIcon, QColor
 
 from data.models import Faculty, Student, ConsultationRequest
 from utils.logger import get_logger

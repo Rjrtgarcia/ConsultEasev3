@@ -541,10 +541,10 @@ class DatabaseManager(QObject):
                     
                 results = faculty_ref.get()
                 
-            for doc in results:
-                faculty_data = doc.to_dict()
-                faculty_data['id'] = doc.id
-                faculty_list.append(faculty_data)
+                for doc in results:
+                    faculty_data = doc.to_dict()
+                    faculty_data['id'] = doc.id
+                    faculty_list.append(faculty_data)
             else:
                 # Use simulation DB
                 for faculty_id, faculty in self.simulation_db['faculty'].items():

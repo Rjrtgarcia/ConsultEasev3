@@ -29,16 +29,16 @@ def setup_exception_handler(debug_mode=False):
             exc_type: Exception type
             exc_value: Exception value
             exc_traceback: Exception traceback
-    """
-    # Log the exception
+        """
+        # Log the exception
         logger.critical("Unhandled exception", 
-                      exc_info=(exc_type, exc_value, exc_traceback))
+                        exc_info=(exc_type, exc_value, exc_traceback))
     
         # Get formatted traceback
         tb_lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
         tb_text = ''.join(tb_lines)
     
-    # Show error dialog
+        # Show error dialog
         if QApplication.instance():
             error_message = str(exc_value)
             detailed_text = tb_text if debug_mode else None

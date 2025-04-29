@@ -256,9 +256,9 @@ class LoginScreen(QWidget):
                 self.status_indicator.setObjectName("status-success")
                 self.status_indicator.setText(f"Welcome, {student.name}!")
                 self.status_indicator.setStyleSheet("color: #4ECDC4;")  # Green color
-            
+                
                 self.logger.info(f"Student authenticated: {student.student_id} ({student.name})")
-            
+                
                 # Record login in audit log
                 self.db_manager.add_audit_log({
                     'action': 'student_login',
@@ -266,7 +266,7 @@ class LoginScreen(QWidget):
                     'details': f"Student login via RFID",
                     'timestamp': datetime.now().isoformat()
                 })
-            
+                
                 # Wait a moment, then proceed to main dashboard
                 QTimer.singleShot(1500, lambda: self.show_dashboard(student))
             else:
@@ -274,7 +274,7 @@ class LoginScreen(QWidget):
                 self.status_indicator.setObjectName("status-error")
                 self.status_indicator.setText("Unknown RFID card. Please try again.")
                 self.status_indicator.setStyleSheet("color: #FF6B6B;")  # Red color
-            
+                
                 self.logger.warning(f"Unknown RFID card scanned: {rfid_id}")
         except Exception as e:
             self.logger.error(f"Error authenticating student: {e}")
