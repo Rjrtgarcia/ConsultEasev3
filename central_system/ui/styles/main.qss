@@ -1,0 +1,333 @@
+/* 
+ConsultEase - Main Stylesheet
+
+This file contains the styles for the ConsultEase application.
+*/
+
+/* Global Styles */
+* {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 12px;
+}
+
+QMainWindow, QDialog {
+    background-color: #f5f5f5;
+}
+
+QLabel {
+    color: #333333;
+}
+
+QPushButton {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #e0e0e0;
+}
+
+QPushButton:pressed {
+    background-color: #d0d0d0;
+}
+
+QPushButton:disabled {
+    color: #888888;
+    background-color: #e0e0e0;
+}
+
+QLineEdit, QTextEdit, QComboBox {
+    padding: 8px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background-color: white;
+}
+
+QLineEdit:focus, QTextEdit:focus, QComboBox:focus {
+    border: 1px solid #3498db;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 20px;
+}
+
+QComboBox::down-arrow {
+    width: 12px;
+    height: 12px;
+}
+
+QTableWidget {
+    border: 1px solid #cccccc;
+    background-color: white;
+    alternate-background-color: #f9f9f9;
+}
+
+QTableWidget::item {
+    padding: 4px;
+}
+
+QTableWidget::item:selected {
+    background-color: #3498db;
+    color: white;
+}
+
+QHeaderView::section {
+    background-color: #e0e0e0;
+    padding: 6px;
+    border: none;
+    font-weight: bold;
+}
+
+QScrollBar:vertical {
+    border: none;
+    background-color: #f0f0f0;
+    width: 12px;
+    margin: 0px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #c0c0c0;
+    min-height: 20px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #a0a0a0;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background-color: #f0f0f0;
+    height: 12px;
+    margin: 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: #c0c0c0;
+    min-width: 20px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background-color: #a0a0a0;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+/* Login Screen */
+#logo-label {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3498db;
+}
+
+#rfid-status {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+#scan-frame {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+#scan-prompt {
+    font-size: 16px;
+    color: #333333;
+}
+
+#status-neutral {
+    color: #7f8c8d;
+}
+
+#status-processing {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+#status-success {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+#status-error {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+#primary-button {
+    background-color: #3498db;
+    color: white;
+}
+
+#primary-button:hover {
+    background-color: #2980b9;
+}
+
+#primary-button:pressed {
+    background-color: #1f6aa5;
+}
+
+#secondary-button {
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    border: 1px solid #bdc3c7;
+}
+
+#secondary-button:hover {
+    background-color: #bdc3c7;
+}
+
+#text-button {
+    background-color: transparent;
+    color: #3498db;
+    border: none;
+}
+
+#text-button:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+#danger-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+#danger-button:hover {
+    background-color: #c0392b;
+}
+
+#simulation-frame {
+    background-color: #fcf8e3;
+    border: 1px solid #faebcc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+#help-text {
+    color: #7f8c8d;
+    font-style: italic;
+    font-size: 11px;
+}
+
+/* Main Dashboard */
+#faculty-card {
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+#faculty-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+#faculty-department {
+    color: #7f8c8d;
+}
+
+#faculty-office {
+    color: #7f8c8d;
+}
+
+#status-available {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+#status-unavailable {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+#panel-header {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+#filter-combo {
+    min-width: 150px;
+}
+
+#request-group, #notif-group {
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+}
+
+#request-combo, #request-input {
+    min-width: 200px;
+}
+
+#request-text {
+    min-height: 100px;
+}
+
+#notification-item {
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 5px;
+}
+
+#notification-time {
+    color: #7f8c8d;
+    font-size: 10px;
+}
+
+#notification-message {
+    color: #2c3e50;
+}
+
+/* Admin Interface */
+#admin-tabs::pane {
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background-color: white;
+}
+
+#admin-tabs::tab-bar {
+    alignment: left;
+}
+
+#admin-tabs::tab {
+    background-color: #ecf0f1;
+    border: 1px solid #cccccc;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 8px 12px;
+    margin-right: 2px;
+}
+
+#admin-tabs::tab:selected {
+    background-color: white;
+    border-bottom: 1px solid white;
+}
+
+#admin-table {
+    gridline-color: #e0e0e0;
+}
+
+#admin-input, #admin-combo {
+    min-width: 250px;
+}
+
+#search-input {
+    min-width: 200px;
+}

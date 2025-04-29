@@ -1,0 +1,30 @@
+# ConsultEase - Python Dependencies
+
+# Core dependencies
+PyQt6==6.6.0
+PyQt6-Qt6==6.6.0
+PyQt6-sip==13.5.2
+paho-mqtt==1.6.1
+firebase-admin==6.2.0
+pyrebase4==4.6.1
+google-cloud-firestore==2.11.1
+python-dotenv==0.21.1
+
+# Hardware interface
+pyusb==1.2.1
+hidapi==0.13.1
+evdev==1.6.1  # For Linux input devices
+pyserial==3.5  # For serial port communication
+dbus-python==1.3.2  # For DBus communication with Squeekboard
+
+# Utilities
+python-dateutil==2.8.2
+pillow==10.0.0
+requests==2.31.0
+cryptography==41.0.3
+schedule==1.2.0  # For scheduled tasks
+cachetools==5.3.1  # For caching
+
+# Development & testing (not needed for production)
+# pytest==7.3.1
+# pytest-qt==4.2.0

@@ -1,0 +1,328 @@
+/* 
+ConsultEase - Dark Theme
+A modern, responsive dark theme for ConsultEase
+*/
+
+/* Global Application Styles */
+QWidget {
+    background-color: #121212;
+    color: #FFFFFF;
+    font-family: 'Roboto', 'Segoe UI', 'Arial', sans-serif;
+    font-size: 12px;
+}
+
+/* Custom Properties */
+* {
+    qproperty-alignment: AlignCenter;
+}
+
+/* Main Window */
+QMainWindow {
+    background-color: #121212;
+    border: none;
+}
+
+/* Frames */
+QFrame {
+    background-color: #1E1E1E;
+    border-radius: 8px;
+}
+
+/* Card Styles */
+#faculty-card, #notification-item, #scan-frame, #request-form {
+    background-color: #2D2D2D;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+}
+
+/* Labels */
+QLabel {
+    color: #FFFFFF;
+    qproperty-alignment: AlignLeft;
+}
+
+QLabel#logo-label {
+    font-size: 28px;
+    font-weight: bold;
+    color: #4ECDC4;
+    qproperty-alignment: AlignCenter;
+}
+
+QLabel#scan-prompt {
+    font-size: 18px;
+    color: #FFFFFF;
+    qproperty-alignment: AlignCenter;
+}
+
+QLabel#faculty-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #4ECDC4;
+}
+
+QLabel#faculty-department {
+    font-size: 14px;
+    color: #BBBBBB;
+}
+
+QLabel#faculty-office {
+    font-size: 12px;
+    color: #BBBBBB;
+}
+
+QLabel#notification-time {
+    font-size: 10px;
+    color: #999999;
+}
+
+QLabel#notification-message {
+    font-size: 12px;
+    color: #FFFFFF;
+}
+
+QLabel#section-header {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-bottom: 1px solid #555555;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    qproperty-alignment: AlignLeft;
+}
+
+/* Status Indicators */
+QLabel#status-available {
+    color: #4ECDC4;
+    font-weight: bold;
+}
+
+QLabel#status-unavailable {
+    color: #FF6B6B;
+    font-weight: bold;
+}
+
+QLabel#status-success {
+    color: #4ECDC4;
+}
+
+QLabel#status-error {
+    color: #FF6B6B;
+}
+
+QLabel#status-processing, QLabel#status-neutral {
+    color: #FFD166;
+}
+
+/* Push Buttons */
+QPushButton {
+    background-color: #2D2D2D;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 15px;
+    font-weight: bold;
+    min-width: 100px;
+    min-height: 36px;
+}
+
+QPushButton:hover {
+    background-color: #3D3D3D;
+}
+
+QPushButton:pressed {
+    background-color: #4D4D4D;
+}
+
+QPushButton:disabled {
+    background-color: #1D1D1D;
+    color: #888888;
+}
+
+QPushButton#primary-button {
+    background-color: #4ECDC4;
+    color: #121212;
+}
+
+QPushButton#primary-button:hover {
+    background-color: #3DBDB4;
+}
+
+QPushButton#primary-button:pressed {
+    background-color: #2DADA4;
+}
+
+QPushButton#secondary-button {
+    background-color: #FF6B6B;
+    color: #FFFFFF;
+}
+
+QPushButton#secondary-button:hover {
+    background-color: #EF5B5B;
+}
+
+QPushButton#secondary-button:pressed {
+    background-color: #DF4B4B;
+}
+
+QPushButton#text-button {
+    background-color: transparent;
+    color: #4ECDC4;
+}
+
+QPushButton#text-button:hover {
+    color: #3DBDB4;
+    text-decoration: underline;
+}
+
+/* Form Elements */
+QLineEdit, QTextEdit, QComboBox {
+    background-color: #2D2D2D;
+    color: #FFFFFF;
+    border: 1px solid #555555;
+    border-radius: 6px;
+    padding: 8px;
+    selection-background-color: #4ECDC4;
+    selection-color: #121212;
+}
+
+QLineEdit:focus, QTextEdit:focus, QComboBox:focus {
+    border: 2px solid #4ECDC4;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    width: 20px;
+    border-left-width: 0px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+QComboBox::down-arrow {
+    image: url(ui/assets/dropdown.png);
+    width: 12px;
+    height: 12px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #2D2D2D;
+    color: #FFFFFF;
+    border: 1px solid #555555;
+    selection-background-color: #4ECDC4;
+    selection-color: #121212;
+    outline: none;
+}
+
+/* Scroll Areas */
+QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+QScrollBar:vertical {
+    border: none;
+    background-color: #2D2D2D;
+    width: 10px;
+    margin: 0px 0px 0px 0px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #555555;
+    min-height: 30px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #4ECDC4;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background-color: #2D2D2D;
+    height: 10px;
+    margin: 0px 0px 0px 0px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: #555555;
+    min-width: 30px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background-color: #4ECDC4;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+/* Group Box */
+QGroupBox {
+    border: 1px solid #555555;
+    border-radius: 8px;
+    margin-top: 20px;
+    padding-top: 24px;
+    padding: 12px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 10px;
+    padding: 0 5px 0 5px;
+    color: #4ECDC4;
+    font-weight: bold;
+}
+
+/* Scroll Areas */
+QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+/* Specialized Components */
+#rfid-icon {
+    background-color: transparent;
+    qproperty-alignment: AlignCenter;
+}
+
+#simulation-frame {
+    background-color: #2D2D2D;
+    border: 1px solid #4ECDC4;
+    border-radius: 8px;
+}
+
+/* Admin Interface */
+#admin-sidebar {
+    background-color: #1A1A1A;
+    min-width: 200px;
+    max-width: 250px;
+    padding: 10px;
+}
+
+#admin-content {
+    background-color: #121212;
+    padding: 15px;
+}
+
+#admin-header {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4ECDC4;
+    margin-bottom: 20px;
+}
+
+/* Help Text */
+QLabel#help-text {
+    color: #BBBBBB;
+    font-size: 11px;
+    font-style: italic;
+} 

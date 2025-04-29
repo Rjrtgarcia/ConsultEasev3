@@ -1,0 +1,66 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    
+    "faculty": {
+      ".read": "auth != null",
+      ".write": "auth != null && (auth.token.admin === true || auth.uid === data.child('faculty_id').val())",
+      "$faculty_id": {
+        ".read": "auth != null",
+        ".write": "auth != null && (auth.token.admin === true || auth.uid === $faculty_id)",
+        "status": {
+          ".read": true,
+          ".write": "auth != null && (auth.token.admin === true || auth.uid === $faculty_id)"
+        }
+      }
+    },
+    
+    "students": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null && auth.token.admin === true",
+      "$student_id": {
+        ".read": "auth != null && (auth.token.admin === true || auth.uid === $student_id)",
+        ".write": "auth != null && (auth.token.admin === true)"
+      }
+    },
+    
+    "consultation_requests": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null",
+      "$request_id": {
+        ".read": "auth != null && (auth.token.admin === true || auth.uid === data.child('faculty_id').val() || auth.uid === data.child('student_id').val())",
+        ".write": "auth != null && (auth.token.admin === true || auth.uid === data.child('faculty_id').val() || (auth.uid === data.child('student_id').val() && !data.exists()))"
+      }
+    },
+    
+    "consultations": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null && auth.token.admin === true",
+      "$consultation_id": {
+        ".read": "auth != null && (auth.token.admin === true || auth.uid === data.child('faculty_id').val() || auth.uid === data.child('student_id').val())",
+        ".write": "auth != null && (auth.token.admin === true || auth.uid === data.child('faculty_id').val())"
+      }
+    },
+    
+    "offices": {
+      ".read": true,
+      ".write": "auth != null && auth.token.admin === true"
+    },
+    
+    "admin_users": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null && auth.token.admin === true"
+    },
+    
+    "system_settings": {
+      ".read": true,
+      ".write": "auth != null && auth.token.admin === true"
+    },
+    
+    "audit_logs": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null"
+    }
+  }
+} 
