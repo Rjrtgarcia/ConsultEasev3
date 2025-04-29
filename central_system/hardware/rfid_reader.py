@@ -258,11 +258,16 @@ class RFIDReaderThread(QThread):
         Run the evdev RFID reader in a loop (Linux only).
         """
         self.logger.info("Starting evdev RFID reader loop")
-        self.status_changed.emit("Ready to scan (evdev)")
         
-        # Set device to non-blocking mode
-        self.evdev_device.grab()
-        
+        try:
+            # Grab the device for exclusive access
+            self.evdev_device.grab()
+            self.logger.info(f"Grabbed evdev device {self.evdev_device.path} for exclusive access.")
+            self.status_changed.emit("Ready to scan (evdev)")
+        except Exception as e:
+            self.logger.warning(f"Could not grab evdev device {self.evdev_device.path}: {e}. Input may be duplicated.")
+            self.status_changed.emit("Ready to scan (evdev - shared)")
+
         while self.running:
             try:
                 # Read events from the device

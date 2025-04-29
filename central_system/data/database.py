@@ -53,6 +53,8 @@ class DatabaseManager(QObject):
         self.offline_queue = []
         self.last_connection_check = datetime.now()
         self.connection_check_interval = 60  # seconds
+        self.monitoring_thread = None
+        self.monitoring_running = False
         
         # Initialize Firebase
         self._initialize_firebase()
@@ -113,14 +115,28 @@ class DatabaseManager(QObject):
         """
         Start a thread to monitor the Firebase connection status.
         """
+        if self.monitoring_thread and self.monitoring_thread.is_alive():
+            self.logger.warning("Connection monitoring thread already running.")
+            return
+            
+        self.monitoring_running = True
+        
         def monitor_connection():
-            while True:
+            while self.monitoring_running:
                 try:
                     # Check connection at regular intervals
-                    time.sleep(self.connection_check_interval)
+                    # Use sleep interval that allows checking self.monitoring_running more often
+                    sleep_interval = 5 # Check every 5 seconds
+                    for _ in range(self.connection_check_interval // sleep_interval):
+                        if not self.monitoring_running:
+                            break
+                        time.sleep(sleep_interval)
+                    
+                    if not self.monitoring_running:
+                        break
                     
                     # Try a simple read operation to check connection
-                    if self.db:
+                    if self.db and self.connected is not None:
                         try:
                             # Try to read a document
                             self.db.collection('_connection_test').document('_test').get()
@@ -144,9 +160,28 @@ class DatabaseManager(QObject):
                     self.logger.error(f"Error in connection monitoring: {e}")
         
         # Start monitoring thread
-        monitor_thread = threading.Thread(target=monitor_connection, daemon=True)
-        monitor_thread.start()
+        self.monitoring_thread = threading.Thread(target=monitor_connection, daemon=True)
+        self.monitoring_thread.start()
+        self.logger.info("Connection monitoring thread started.")
         
+    def stop_monitoring(self):
+        """Stop the connection monitoring thread."""
+        if self.monitoring_thread and self.monitoring_thread.is_alive():
+            self.logger.info("Stopping connection monitoring thread...")
+            self.monitoring_running = False
+            self.monitoring_thread.join(timeout=self.connection_check_interval + 5) # Wait a bit longer than interval
+            if self.monitoring_thread.is_alive():
+                self.logger.warning("Connection monitoring thread did not exit cleanly.")
+            else:
+                self.logger.info("Connection monitoring thread stopped.")
+        self.monitoring_thread = None
+
+    def cleanup(self):
+        """Clean up database resources."""
+        self.stop_monitoring()
+        # Other cleanup if needed (e.g., close listeners)
+        self.logger.info("DatabaseManager cleanup complete.")
+
     def _process_offline_queue(self):
         """
         Process operations queued during offline mode.

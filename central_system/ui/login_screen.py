@@ -238,7 +238,7 @@ class LoginScreen(QWidget):
         self.status_indicator.setObjectName("status-processing")
         self.status_indicator.setText("Processing RFID...")
         self.status_indicator.setStyleSheet("color: #FFD166;")  # Amber color
-        QApplication.processEvents()  # Force update UI
+        # QApplication.processEvents()  # Force update UI - Removed for smoother event handling
         
         # Validate against database
         try:

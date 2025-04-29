@@ -305,14 +305,14 @@ class MQTTClient(QObject):
             userdata: User data
             msg: MQTT message
         """
-            topic = msg.topic
-            payload = msg.payload.decode('utf-8')
-            
+        topic = msg.topic
+        payload = msg.payload.decode('utf-8')
+        
         self.logger.debug(f"Received MQTT message: {topic} - {payload}")
         self.message_received.emit(topic, payload)
-            
-            # Process the message
-            self._process_message(topic, payload)
+        
+        # Process the message
+        self._process_message(topic, payload)
             
     def _process_message(self, topic, payload):
         """
@@ -326,18 +326,18 @@ class MQTTClient(QObject):
             # Parse the JSON payload
             data = json.loads(payload)
         
-        # Process faculty status updates
-        if topic.startswith('faculty/') and topic.endswith('/status'):
+            # Process faculty status updates
+            if topic.startswith('faculty/') and topic.endswith('/status'):
                 faculty_id = topic.split('/')[1]
                 status = data.get('status')
                 if status:
                     self.logger.info(f"Faculty status changed: {faculty_id} -> {status}")
-                self.faculty_status_changed.emit(faculty_id, status)
+                    self.faculty_status_changed.emit(faculty_id, status)
                 
-        # Process consultation requests
-        elif topic.startswith('faculty/') and topic.endswith('/requests'):
+            # Process consultation requests
+            elif topic.startswith('faculty/') and topic.endswith('/requests'):
                 faculty_id = topic.split('/')[1]
-                    data['faculty_id'] = faculty_id
+                data['faculty_id'] = faculty_id
                 self.logger.info(f"Consultation request received for {faculty_id}")
                 self.request_received.emit(data)
                 
@@ -347,7 +347,7 @@ class MQTTClient(QObject):
                 
         except json.JSONDecodeError:
             self.logger.warning(f"Received invalid JSON payload: {payload}")
-            except Exception as e:
+        except Exception as e:
             self.logger.error(f"Error processing MQTT message: {e}")
                 
     def _start_reconnect_timer(self):
@@ -512,11 +512,11 @@ class MQTTClient(QObject):
         if not self.connected or not self.client:
             if len(self.message_queue) < self.max_queue_size:
                 self.message_queue.append({
-                'topic': topic,
-                'payload': payload,
+                    'topic': topic,
+                    'payload': payload,
                     'qos': qos,
                     'retain': retain
-            })
+                })
                 self.logger.info(f"Queued message for topic {topic} (not connected)")
             else:
                 self.logger.warning(f"Message queue full, discarding message for topic {topic}")
@@ -534,4 +534,4 @@ class MQTTClient(QObject):
             
         except Exception as e:
             self.logger.error(f"Error publishing message to {topic}: {e}")
-            return False
+            return False 

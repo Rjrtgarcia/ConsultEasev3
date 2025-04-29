@@ -43,11 +43,11 @@ def main():
         log_level = os.getenv("LOG_LEVEL", "INFO")
         debug_mode = os.getenv("DEBUG_MODE", "False").lower() == "true"
         logger = setup_logger(level=getattr(logging, log_level))
-    logger.info("Starting ConsultEase application")
+        logger.info("Starting ConsultEase application")
     
         # Create Qt application
-    app = QApplication(sys.argv)
-    app.setApplicationName("ConsultEase")
+        app = QApplication(sys.argv)
+        app.setApplicationName("ConsultEase")
         app.setApplicationVersion("1.0.0")
     
         # Set application style
@@ -80,12 +80,12 @@ def main():
         
         # Setup exception handler
         setup_exception_handler(debug_mode)
-    
-    # Initialize database connection
+        
+        # Initialize database connection
         logger.info("Initializing database connection")
         db_manager = DatabaseManager()
-    
-    # Initialize MQTT client
+        
+        # Initialize MQTT client
         logger.info("Initializing MQTT client")
         mqtt_broker = os.getenv("MQTT_BROKER", "localhost")
         mqtt_port = int(os.getenv("MQTT_PORT", "1883"))
@@ -157,4 +157,4 @@ def cleanup(keyboard_handler):
         keyboard_handler.cleanup()
 
 if __name__ == "__main__":
-    main()
+    main() 

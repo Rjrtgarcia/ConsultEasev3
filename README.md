@@ -29,7 +29,7 @@ ConsultEase is a comprehensive faculty consultation management system designed t
 ## Installation
 
 ### Prerequisites
-- Raspberry Pi 4 (4GB+ RAM recommended) with Raspberry Pi OS
+- Raspberry Pi 4 (4GB+ RAM recommended) with Raspberry Pi OS (Bookworm 64-bit recommended)
 - Python 3.9+ installed
 - MQTT Broker (Mosquitto recommended)
 - Firebase account with Realtime Database
@@ -37,26 +37,42 @@ ConsultEase is a comprehensive faculty consultation management system designed t
 
 ### Central System Setup
 
-1. Clone the repository:
+1. **Install System Dependencies:**
+   Before installing Python packages, install the required system libraries:
+   ```bash
+   sudo apt update
+   sudo apt install -y python3-pip python3-dev libusb-1.0-0-dev libhidapi-dev libdbus-1-dev libdbus-glib-1-dev squeekboard qt6-base-dev qt6-base-dev-tools
    ```
-git clone https://github.com/yourusername/consultease.git
-cd consultease
-```
+   *(Note: PyQt6 might pull some Qt dependencies, but installing `qt6-base-dev` ensures build tools are present if needed)*
 
-2. Install dependencies:
+2. **Grant Input Device Permissions:**
+   The RFID reader often acts as a keyboard. To allow the application to read it directly without typing globally, add your user to the `input` group (requires logout/login or reboot):
+   ```bash
+   sudo usermod -a -G input $USER 
    ```
+   *(Replace `$USER` with the actual username if not running as the logged-in user, e.g., `pi`)*
+
+3. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/consultease.git # Replace with your repo URL
+   cd consultease
+   ```
+
+4. **Install Python Dependencies:**
+   ```bash
    pip install -r requirements.txt
    ```
 
-3. Configure the system:
+5. **Configure the system:**
    - Copy `config.env.example` to `config.env`
    - Edit `config.env` with your Firebase credentials and MQTT settings
-   - Configure on-screen keyboard settings if using touchscreen
+   - **Important:** For Raspberry Pi OS Bookworm (Wayland default), set `KEYBOARD_TYPE=squeekboard` in `config.env`.
+   - Configure other settings as needed (e.g., `TOUCHSCREEN_ENABLED`).
 
-4. Run the application:
-   ```
+6. **Run the application:**
+   ```bash
    python central_system/main.py
-```
+   ```
 
 ### Automatic Startup (Optional)
 
@@ -97,58 +113,22 @@ ConsultEase is optimized for touchscreen interaction with the following features
 
 - Large, touch-friendly UI elements and controls
 - On-screen keyboard support with automatic popup/hide behavior
-- Support for both Squeekboard and Onboard virtual keyboards
+- Support for both Squeekboard (recommended for Wayland/Bookworm) and Onboard virtual keyboards
 - Configurable keyboard settings in `config.env`
 
 To enable on-screen keyboard:
 
-1. Ensure the following packages are installed:
-   ```
-   # For Squeekboard
-   sudo apt install squeekboard
-
-   # For Onboard (alternative)
-   sudo apt install onboard
-   ```
+1. Ensure the system dependencies (including `squeekboard` or `onboard`) were installed during setup (see Prerequisites).
 
 2. Configure keyboard settings in `config.env`:
-   ```
+   ```ini
+   TOUCHSCREEN_ENABLED=True
    KEYBOARD_ENABLED=True
-   KEYBOARD_TYPE=squeekboard  # or 'onboard'
+   KEYBOARD_TYPE=squeekboard  # Recommended for Bookworm/Wayland
    KEYBOARD_AUTO_POPUP=True
    ```
 
-## Faculty Desk Unit Setup
-
-1. Open `faculty_desk_unit/faculty_desk_unit.ino` in Arduino IDE
-2. Install required libraries via Arduino Library Manager:
-   - PubSubClient
-   - Adafruit SSD1306
-   - Adafruit GFX
-   - ArduinoJson
-3. Configure WiFi and MQTT settings in `credentials.h`
-4. Flash to ESP32 device
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Issues**:
-   - Verify Firebase credentials in `config.env`
-   - Check network connectivity
-   - Ensure Firebase rules allow read/write access
-
-2. **MQTT Connection Issues**:
-   - Verify MQTT broker address and credentials
-   - Check if MQTT broker is running and accessible
-   - Ensure proper topic permissions
-
-3. **On-screen Keyboard Not Appearing**:
-   - Check `KEYBOARD_ENABLED` is set to `True` in `config.env`
-   - Verify the selected keyboard (Squeekboard/Onboard) is installed
-   - For Squeekboard issues, check D-Bus is functioning correctly
-
-## Contributing
+3. **On-screen Keyboard Not Appearing**:\n   - Check `KEYBOARD_ENABLED` is set to `True` in `config.env`\n   - Verify the selected keyboard (`squeekboard` recommended) is installed via `apt`\n   - For Squeekboard issues, check D-Bus is functioning correctly\n\n4. **RFID Reader Issues:**\n   - Ensure the user running the application is in the `input` group (see Installation steps).\n   - Verify the reader is detected by the system (`lsusb`, check `/dev/input/`).\n   - If using `evdev`, ensure the reader appears as a keyboard-like device. The application might need `sudo` if permissions are incorrect, but the `input` group is preferred.\n\n## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
