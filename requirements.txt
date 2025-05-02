@@ -24,7 +24,3 @@ requests==2.31.0
 cryptography==41.0.3
 schedule==1.2.0  # For scheduled tasks
 cachetools==5.3.1  # For caching
-
-# Development & testing (not needed for production)
-# pytest==7.3.1
-# pytest-qt==4.2.0

@@ -6,7 +6,7 @@ ConsultEase - Office Model
 This module defines the Office model for the ConsultEase application.
 """
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal
 
 
 class Office(QObject):

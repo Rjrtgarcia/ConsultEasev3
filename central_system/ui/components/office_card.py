@@ -7,11 +7,11 @@ This module defines the OfficeCard UI component which displays office informatio
 in a card format for the ConsultEase application.
 """
 
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QFrame, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QSizePolicy, QSpacerItem
 )
-from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
+from PyQt6.QtCore import Qt, pyqtSignal, pyqtSlot
 
 from central_system.ui.utils.styles import (
     CARD_STYLE, TITLE_LABEL_STYLE, SUBTITLE_LABEL_STYLE, 
@@ -59,7 +59,7 @@ class OfficeCard(QFrame):
         # Apply card style
         self.setStyleSheet(CARD_STYLE)
         self.setMinimumWidth(300)
-        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum)
         
         # Main layout
         main_layout = QVBoxLayout(self)
@@ -79,7 +79,7 @@ class OfficeCard(QFrame):
         # Status label
         self.status_container = QHBoxLayout()
         self.status_label = QLabel()
-        self.status_label.setAlignment(Qt.AlignCenter)
+        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.status_container.addStretch()
         self.status_container.addWidget(self.status_label)
         self.status_container.addStretch()

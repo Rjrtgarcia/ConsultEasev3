@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBut
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
 
-from data.models.consultation import ConsultationRequest
+from data.models.consultation_request import ConsultationRequest
 from utils.logger import get_logger
 from utils.error_handler import show_error_dialog, show_info_dialog
 

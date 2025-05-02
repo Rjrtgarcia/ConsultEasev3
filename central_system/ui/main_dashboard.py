@@ -209,7 +209,7 @@ class MainDashboard(QMainWindow):
         header_layout.addWidget(logo_label)
         
         # Spacer
-        header_layout.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        header_layout.addItem(QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
         
         # Student info
         student_info = QLabel(f"Welcome, {self.student.get('name', 'Student')}")
@@ -233,7 +233,7 @@ class MainDashboard(QMainWindow):
         main_layout.addLayout(header_layout)
         
         # Content area
-        content_splitter = QSplitter(Qt.Horizontal)
+        content_splitter = QSplitter(Qt.Orientation.Horizontal)
         content_splitter.setHandleWidth(1)
         content_splitter.setChildrenCollapsible(False)
         
@@ -285,8 +285,8 @@ class MainDashboard(QMainWindow):
         # Faculty list scroll area
         faculty_scroll = QScrollArea()
         faculty_scroll.setWidgetResizable(True)
-        faculty_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        faculty_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        faculty_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        faculty_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         
         self.faculty_container = QWidget()
         self.faculty_layout = QVBoxLayout(self.faculty_container)
@@ -348,8 +348,8 @@ class MainDashboard(QMainWindow):
         # Notifications scroll area
         notif_scroll = QScrollArea()
         notif_scroll.setWidgetResizable(True)
-        notif_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        notif_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        notif_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        notif_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         
         self.notif_container = QWidget()
         self.notif_layout = QVBoxLayout(self.notif_container)
@@ -608,10 +608,10 @@ class MainDashboard(QMainWindow):
         # Confirm logout
         reply = QMessageBox.question(self, "Logout", 
                                     "Are you sure you want to log out?",
-                                    QMessageBox.Yes | QMessageBox.No,
-                                    QMessageBox.No)
+                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                    QMessageBox.StandardButton.No)
         
-        if reply == QMessageBox.Yes:
+        if reply == QMessageBox.StandardButton.Yes:
             # Stop refresh timer
             self.refresh_timer.stop()
             
