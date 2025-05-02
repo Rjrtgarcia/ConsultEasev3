@@ -37,7 +37,8 @@ class KeyboardHandler(QObject):
         self.logger = get_logger(__name__)
         
         # Check if keyboard is enabled in config
-        self.enabled = os.getenv("TOUCHSCREEN_ENABLED", "False").lower() == "true"
+        self.enabled = os.getenv("KEYBOARD_ENABLED", "False").lower() == "true"
+        self.auto_popup = os.getenv("KEYBOARD_AUTO_POPUP", "True").lower() == "true"
         self.keyboard_type = os.getenv("KEYBOARD_TYPE", "squeekboard").lower()
         
         # Get platform
@@ -52,7 +53,7 @@ class KeyboardHandler(QObject):
         self.hide_timer.setSingleShot(True)
         self.hide_timer.timeout.connect(self._hide_keyboard)
         
-        self.logger.info(f"Keyboard handler initialized (enabled: {self.enabled}, type: {self.keyboard_type})")
+        self.logger.info(f"Keyboard handler initialized (enabled: {self.enabled}, auto-popup: {self.auto_popup}, type: {self.keyboard_type})")
         
     def install_event_filter(self, app):
         """
@@ -75,7 +76,7 @@ class KeyboardHandler(QObject):
             old (QWidget): Widget that lost focus
             now (QWidget): Widget that gained focus
         """
-        if not self.enabled:
+        if not self.enabled or not self.auto_popup:
             return
             
         # Show keyboard when text input widgets get focus
@@ -194,6 +195,25 @@ class KeyboardHandler(QObject):
         else:
             self.logger.warning(f"On-screen keyboard not supported on {self.platform}")
             
+    # Public methods for manual keyboard control
+    def show_keyboard(self):
+        """Manually show the on-screen keyboard."""
+        if self.enabled:
+            self._show_keyboard()
+            
+    def hide_keyboard(self):
+        """Manually hide the on-screen keyboard."""
+        if self.enabled:
+            self._hide_keyboard()
+    
+    def toggle_keyboard(self):
+        """Toggle the on-screen keyboard visibility."""
+        if self.enabled:
+            if self.is_keyboard_visible:
+                self._hide_keyboard()
+            else:
+                self._show_keyboard()
+                
     def cleanup(self):
         """Clean up resources."""
         if self.platform.startswith('linux') and self.keyboard_type == "onboard" and self.keyboard_process:

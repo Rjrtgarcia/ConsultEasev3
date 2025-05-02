@@ -53,7 +53,7 @@ class FacultyCard(QFrame):
         # Faculty name
         name_label = QLabel(self.faculty.get('name', 'Unknown'))
         name_label.setObjectName("faculty-name")
-        name_label.setFont(QFont("Arial", 12, QFont.Bold))
+        name_label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         layout.addWidget(name_label)
         
         # Department
@@ -205,7 +205,7 @@ class MainDashboard(QMainWindow):
         # Logo (placeholder)
         logo_label = QLabel("ConsultEase")
         logo_label.setObjectName("logo-label")
-        logo_label.setFont(QFont("Arial", 18, QFont.Bold))
+        logo_label.setFont(QFont("Arial", 18, QFont.Weight.Bold))
         header_layout.addWidget(logo_label)
         
         # Spacer
@@ -215,6 +215,14 @@ class MainDashboard(QMainWindow):
         student_info = QLabel(f"Welcome, {self.student.get('name', 'Student')}")
         student_info.setObjectName("student-info")
         header_layout.addWidget(student_info)
+        
+        # Keyboard toggle button (if on-screen keyboard is enabled)
+        app = QApplication.instance()
+        if hasattr(app, 'keyboard_handler') and app.keyboard_handler.enabled:
+            keyboard_button = QPushButton("Keyboard")
+            keyboard_button.setObjectName("text-button")
+            keyboard_button.clicked.connect(lambda: app.keyboard_handler.toggle_keyboard())
+            header_layout.addWidget(keyboard_button)
         
         # Logout button
         logout_button = QPushButton("Logout")
@@ -238,7 +246,7 @@ class MainDashboard(QMainWindow):
         # Faculty panel header
         faculty_header = QLabel("Faculty Availability")
         faculty_header.setObjectName("panel-header")
-        faculty_header.setFont(QFont("Arial", 14, QFont.Bold))
+        faculty_header.setFont(QFont("Arial", 14, QFont.Weight.Bold))
         left_layout.addWidget(faculty_header)
         
         # Faculty filter controls
