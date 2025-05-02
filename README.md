@@ -25,6 +25,21 @@ ConsultEase is a comprehensive faculty consultation management system designed t
 - **Touchscreen Support**: Optimized for touchscreen interaction with on-screen keyboard
 - **Admin Dashboard**: Comprehensive system management interface
 - **BLE Proximity Detection**: Automatic faculty presence detection using BLE beacons
+- **Automatic RFID Reader Detection**: Smart detection of USB RFID readers without manual configuration
+
+## Recent Updates
+
+- **PyQt6 Compatibility Improvements**: Fixed compatibility issues with modern PyQt6 syntax:
+  - Updated QFont.Bold to QFont.Weight.Bold
+  - Updated QSizePolicy.Expanding to QSizePolicy.Policy.Expanding
+  - Improved keyboard handler implementation
+- **Automatic RFID Reader Detection**: The system now automatically detects common USB RFID readers without requiring manual configuration
+  - Added support for 10+ common RFID reader models
+  - Implemented device caching for faster startup
+  - Added reader information display on login screen
+- **Improved On-screen Keyboard Support**: Better integration with Squeekboard on Wayland systems
+- **Database Connection Improvements**: Enhanced stability for both Firebase and PostgreSQL connections
+- **Security Enhancements**: Improved Firebase security rules implementation
 
 ## Installation
 
@@ -105,8 +120,10 @@ ConsultEase uses a `.env` file for configuration. A sample configuration file (`
    MQTT_PASSWORD=your-password
 
    # Hardware Settings
-   RFID_SIMULATION=True/False  # Set to False for real RFID reader
-   RFID_PORT=COM3  # Serial port for RFID reader if applicable
+   RFID_SIMULATION=False       # Set to True for RFID reader simulation mode
+   RFID_AUTO_DETECT=True       # Automatically detect USB RFID readers
+   # RFID_VENDOR_ID=FFFF       # Optional: Manual override for reader vendor ID
+   # RFID_PRODUCT_ID=0035      # Optional: Manual override for reader product ID
 
    # Logging
    LOG_LEVEL=INFO  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
@@ -172,7 +189,38 @@ To enable on-screen keyboard:
    KEYBOARD_AUTO_POPUP=True
    ```
 
-3. **On-screen Keyboard Not Appearing**:\n   - Check `KEYBOARD_ENABLED` is set to `True` in `.env`\n   - Verify the selected keyboard (`squeekboard` recommended) is installed via `apt`\n   - For Squeekboard issues, check D-Bus is functioning correctly\n\n4. **RFID Reader Issues:**\n   - Ensure the user running the application is in the `input` group (see Installation steps).\n   - Verify the reader is detected by the system (`lsusb`, check `/dev/input/`).\n   - If using `evdev`, ensure the reader appears as a keyboard-like device. The application might need `sudo` if permissions are incorrect, but the `input` group is preferred.\n\n## Documentation
+## Troubleshooting
+
+### Common Issues
+
+1. **PyQt6 Compatibility Issues**:
+   - If you encounter `QFont.Bold` errors, ensure you're using the updated syntax: `QFont.Weight.Bold`
+   - For `QSizePolicy` errors, use the new enum syntax: `QSizePolicy.Policy.Expanding`
+   - For module import errors, check that you've included all necessary imports (e.g., `QApplication`)
+
+2. **On-screen Keyboard Issues**:
+   - Check `KEYBOARD_ENABLED` is set to `True` in `.env`
+   - Verify the selected keyboard (`squeekboard` recommended) is installed via `apt`
+   - For Squeekboard issues on Wayland, check D-Bus is functioning correctly
+
+3. **RFID Reader Issues**:
+   - The system automatically detects common USB RFID readers. Check the login screen for detection messages.
+   - If auto-detection fails, you can manually set the RFID_VENDOR_ID and RFID_PRODUCT_ID in config.env.
+   - Ensure the user running the application is in the `input` group (see Installation steps).
+   - Verify the reader is detected by the system (`lsusb` command on Linux, Device Manager on Windows).
+   - If using `evdev`, ensure the reader appears as a keyboard-like device.
+   - Run `lsusb` to get the vendor and product IDs of your reader if manual configuration is needed.
+
+4. **Database Connection Issues**:
+   - For Firebase, ensure your security rules are correctly formatted with the required `if` keyword before conditional expressions
+   - Verify your service account key file is correctly placed and has proper permissions
+   - See the DATABASE_SETUP_GUIDE.md for detailed database configuration instructions
+
+5. **Default Admin Login**:
+   - Username: admin
+   - Password: admin123
+
+## Documentation
 
 - **[Database Setup Guide](DATABASE_SETUP_GUIDE.md)**: Comprehensive instructions for setting up and configuring the database
 - **[Production Checklist](PRODUCTION_CHECKLIST.md)**: Requirements for production deployment

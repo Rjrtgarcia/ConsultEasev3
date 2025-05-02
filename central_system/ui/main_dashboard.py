@@ -12,7 +12,7 @@ from datetime import datetime
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
                             QPushButton, QFrame, QLineEdit, QTextEdit, QComboBox,
                             QScrollArea, QGridLayout, QSplitter, QGroupBox, 
-                            QFormLayout, QMessageBox, QSizePolicy, QSpacerItem)
+                            QFormLayout, QMessageBox, QSizePolicy, QSpacerItem, QApplication)
 from PyQt6.QtCore import Qt, QTimer, pyqtSlot, QSize
 from PyQt6.QtGui import QFont, QPixmap, QIcon, QColor
 import uuid

@@ -46,6 +46,7 @@ class LoginScreen(QWidget):
         self.rfid_reader.card_detected.connect(self.handle_rfid_scan)
         self.rfid_reader.status_changed.connect(self.update_rfid_status)
         self.rfid_reader.error_occurred.connect(self.handle_rfid_error)
+        self.rfid_reader.reader_detected.connect(self.handle_reader_detected)
         
         # Initialize UI
         self.init_ui()
@@ -431,3 +432,17 @@ class LoginScreen(QWidget):
             self.rfid_reader.stop_detection()
         
         event.accept()
+
+    def handle_reader_detected(self, reader_info):
+        """
+        Handle RFID reader detection.
+        
+        Args:
+            reader_info (dict): Reader information
+        """
+        self.logger.info(f"RFID reader detected: {reader_info['name']}")
+        
+        # Update UI with reader information
+        if hasattr(self, 'rfid_status_label'):
+            self.rfid_status_label.setText(f"RFID Reader: {reader_info['name']}")
+            self.rfid_status_label.setStyleSheet("color: #4ECDC4;")  # Green color

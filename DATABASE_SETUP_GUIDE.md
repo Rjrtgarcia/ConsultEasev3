@@ -113,8 +113,18 @@ service cloud.firestore {
   }
 }
 ```
-5. Customize the rules as needed for your security requirements
-6. Click "Publish"
+
+5. **IMPORTANT NOTE**: Firestore security rules require the `if` keyword before each condition. Rules without the `if` keyword will fail silently. The following formats are NOT valid:
+   ```
+   // INVALID - missing "if" keyword
+   allow read: request.auth != null;
+   
+   // CORRECT format
+   allow read: if request.auth != null;
+   ```
+
+6. Customize the rules as needed for your security requirements
+7. Click "Publish"
 
 ### Step 5: Update Configuration
 1. Open `central_system/config.env`
@@ -184,7 +194,25 @@ POSTGRESQL_HOST=localhost
 POSTGRESQL_PORT=5432
 ```
 
-### Step 4: Initialize Database
+### Step 4: Connection Pooling (Recommended for Production)
+For better performance in production environments, enable connection pooling:
+
+1. Install the psycopg2 connection pool package:
+```bash
+pip install psycopg2-pool
+```
+
+2. Add connection pooling settings to `config.env`:
+```
+# PostgreSQL connection pooling
+POSTGRESQL_POOL_MIN=1
+POSTGRESQL_POOL_MAX=10
+POSTGRESQL_POOL_IDLE=60
+```
+
+3. The system will automatically use connection pooling when these settings are present.
+
+### Step 5: Initialize Database
 The system will automatically create the necessary tables when it connects to the database for the first time. This includes:
 - Faculty table
 - Students table

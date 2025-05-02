@@ -4,7 +4,7 @@
 ConsultEase - RFID Reader Interface
 
 This module provides an interface for RFID card readers.
-It supports both real RFID readers and simulation mode.
+It supports both real RFID readers and simulation mode with auto-detection.
 """
 
 import os
@@ -12,6 +12,7 @@ import time
 import threading
 import random
 import queue
+import json
 from datetime import datetime
 from PyQt6.QtCore import QObject, pyqtSignal, QThread, QTimer
 from utils.logger import get_logger
@@ -32,6 +33,26 @@ try:
 except ImportError:
     EVDEV_AVAILABLE = False
 
+# Database of common RFID readers with their USB IDs
+COMMON_RFID_READERS = [
+    {"vendor": 0x08FF, "product": 0x0009, "name": "ACS ACR122U NFC Reader"},
+    {"vendor": 0x04E6, "product": 0x5591, "name": "SCM Microsystems RFID Reader"},
+    {"vendor": 0x1FC9, "product": 0x0120, "name": "NXP RFID Reader"},
+    {"vendor": 0xFFFF, "product": 0x0035, "name": "Generic HID RFID Reader"},
+    {"vendor": 0x0C27, "product": 0x3BFA, "name": "Sycreader RFID Reader"},
+    {"vendor": 0x0403, "product": 0x6001, "name": "FTDI-based RFID Reader"},
+    {"vendor": 0x045E, "product": 0x00DB, "name": "Microsoft Keyboard (RFID Compatible)"},
+    {"vendor": 0x413D, "product": 0x2107, "name": "Velleman RFID Reader"},
+    {"vendor": 0x1A86, "product": 0x7523, "name": "CH340 RFID Reader"},
+    {"vendor": 0x16C0, "product": 0x05DC, "name": "Van Ooijen Technische Informatica RFID Reader"},
+    {"vendor": 0x25AE, "product": 0x24A0, "name": "Microchip RFID Reader"},
+]
+
+# Keywords that indicate a device might be an RFID reader
+RFID_KEYWORDS = [
+    "rfid", "reader", "card", "tag", "nfc", "mifare", "acr", "hid", "proximity", "em4100"
+]
+
 class RFIDReaderThread(QThread):
     """
     Thread for reading RFID cards.
@@ -39,8 +60,9 @@ class RFIDReaderThread(QThread):
     card_detected = pyqtSignal(str)
     status_changed = pyqtSignal(str)
     error_occurred = pyqtSignal(str)
+    reader_detected = pyqtSignal(dict)  # New signal for detected readers
     
-    def __init__(self, vendor_id=None, product_id=None, simulate=False):
+    def __init__(self, vendor_id=None, product_id=None, simulate=False, auto_detect=True):
         """
         Initialize the RFID reader thread.
         
@@ -48,14 +70,17 @@ class RFIDReaderThread(QThread):
             vendor_id (int, optional): USB vendor ID
             product_id (int, optional): USB product ID
             simulate (bool, optional): Whether to simulate RFID reader
+            auto_detect (bool, optional): Whether to auto-detect RFID readers
         """
         super().__init__()
         self.logger = get_logger(__name__)
         self.vendor_id = vendor_id
         self.product_id = product_id
         self.simulate = simulate
+        self.auto_detect = auto_detect
         self.running = False
         self.device = None
+        self.detected_reader = None
         self.evdev_device = None
         self.platform = os.name  # 'posix' for Linux/Mac, 'nt' for Windows
         
@@ -79,8 +104,18 @@ class RFIDReaderThread(QThread):
         else:
             # Try different reader types in sequence
             try:
-                # First try USB HID readers
-                if USB_AVAILABLE:
+                # First try auto-detection if enabled
+                if self.auto_detect:
+                    reader_info = self._auto_detect_reader()
+                    if reader_info:
+                        self.vendor_id = reader_info["vendor"]
+                        self.product_id = reader_info["product"]
+                        self.detected_reader = reader_info
+                        self.reader_detected.emit(reader_info)
+                        self.status_changed.emit(f"Detected: {reader_info['name']}")
+                
+                # If we have vendor and product IDs, try USB HID readers
+                if USB_AVAILABLE and self.vendor_id and self.product_id:
                     try:
                         self._connect_usb_reader()
                         self._run_usb_reader()
@@ -105,7 +140,141 @@ class RFIDReaderThread(QThread):
                 self.error_occurred.emit(f"Error: {e}")
                 self.status_changed.emit("Falling back to simulation mode")
                 self._run_simulation()
+    
+    def _auto_detect_reader(self):
+        """
+        Auto-detect RFID readers by scanning all USB devices.
+        
+        Returns:
+            dict: Reader information if found, None otherwise
+        """
+        if not USB_AVAILABLE:
+            self.logger.warning("USB library not available for auto-detection")
+            return None
+        
+        self.logger.info("Starting USB RFID reader auto-detection...")
+        self.status_changed.emit("Scanning for RFID readers...")
+        
+        # First, try to load cached reader info if available
+        cache_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'rfid_cache.json')
+        try:
+            if os.path.exists(cache_file):
+                with open(cache_file, 'r') as f:
+                    cached_data = json.load(f)
+                    if cached_data.get('vendor') and cached_data.get('product'):
+                        self.logger.info(f"Using cached RFID reader: {cached_data.get('name', 'Unknown')}")
+                        # Check if the cached device is still connected
+                        dev = usb.core.find(idVendor=cached_data['vendor'], idProduct=cached_data['product'])
+                        if dev:
+                            return cached_data
+                        else:
+                            self.logger.info("Cached device not found, scanning for new devices")
+        except Exception as e:
+            self.logger.warning(f"Error loading RFID reader cache: {e}")
+        
+        # Check for common RFID readers first
+        for reader in COMMON_RFID_READERS:
+            try:
+                dev = usb.core.find(idVendor=reader["vendor"], idProduct=reader["product"])
+                if dev:
+                    self.logger.info(f"Found known RFID reader: {reader['name']}")
+                    # Save to cache for future use
+                    self._save_reader_cache(reader)
+                    return reader
+            except Exception as e:
+                self.logger.debug(f"Error checking for reader {reader['name']}: {e}")
+        
+        # If no common reader found, scan all USB devices
+        try:
+            devices = usb.core.find(find_all=True)
+            for dev in devices:
+                try:
+                    vendor_id = dev.idVendor
+                    product_id = dev.idProduct
+                    
+                    # Get device information
+                    try:
+                        manufacturer = usb.util.get_string(dev, dev.iManufacturer)
+                    except:
+                        manufacturer = "Unknown"
+                    
+                    try:
+                        product = usb.util.get_string(dev, dev.iProduct)
+                    except:
+                        product = "Unknown"
+                    
+                    device_name = f"{manufacturer} {product}"
+                    
+                    # Check if this might be an RFID reader based on the device name
+                    is_rfid_reader = False
+                    device_name_lower = device_name.lower()
+                    
+                    for keyword in RFID_KEYWORDS:
+                        if keyword in device_name_lower:
+                            is_rfid_reader = True
+                            break
+                    
+                    # Also check for HID devices that might be RFID readers
+                    # RFID readers often register as HID keyboard devices
+                    if (dev.bDeviceClass == 0 and  # Device class in interface
+                        dev.bNumConfigurations > 0):
+                        try:
+                            for cfg in dev:
+                                for intf in cfg:
+                                    # Check if it's a HID device
+                                    if intf.bInterfaceClass == 3:  # HID class
+                                        # Look for keyboard/keypad
+                                        if intf.bInterfaceSubClass == 1 and intf.bInterfaceProtocol in [1, 2]:
+                                            is_rfid_reader = True
+                                            break
+                        except:
+                            pass
+                    
+                    if is_rfid_reader:
+                        reader_info = {
+                            "vendor": vendor_id,
+                            "product": product_id,
+                            "name": device_name,
+                            "auto_detected": True
+                        }
+                        self.logger.info(f"Found potential RFID reader: {device_name} ({vendor_id:04x}:{product_id:04x})")
+                        
+                        # Save to cache for future use
+                        self._save_reader_cache(reader_info)
+                        return reader_info
+                        
+                except Exception as e:
+                    self.logger.debug(f"Error checking USB device: {e}")
+        
+        except Exception as e:
+            self.logger.warning(f"Auto-detection error: {e}")
+        
+        self.logger.warning("No RFID readers detected")
+        return None
+    
+    def _save_reader_cache(self, reader_info):
+        """
+        Save detected reader information to cache file.
+        
+        Args:
+            reader_info (dict): Reader information to save
+        """
+        cache_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
+        cache_file = os.path.join(cache_dir, 'rfid_cache.json')
+        
+        try:
+            # Create directory if it doesn't exist
+            if not os.path.exists(cache_dir):
+                os.makedirs(cache_dir)
                 
+            # Save cache file
+            with open(cache_file, 'w') as f:
+                json.dump(reader_info, f)
+            
+            self.logger.info(f"Saved RFID reader info to cache: {reader_info['name']}")
+        except Exception as e:
+            self.logger.warning(f"Error saving RFID reader cache: {e}")
+        
     def stop(self):
         """Stop the thread."""
         self.running = False
@@ -452,10 +621,12 @@ class HybridRFIDReader(QObject):
         card_detected (str): Emitted when an RFID card is detected
         status_changed (str): Emitted when the reader status changes
         error_occurred (str): Emitted when an error occurs
+        reader_detected (dict): Emitted when an RFID reader is detected
     """
     card_detected = pyqtSignal(str)
     status_changed = pyqtSignal(str)
     error_occurred = pyqtSignal(str)
+    reader_detected = pyqtSignal(dict)  # New signal
     
     def __init__(self, parent=None):
         """
@@ -469,6 +640,9 @@ class HybridRFIDReader(QObject):
         
         # Check if simulation mode is enabled
         self.simulation_mode = os.getenv("RFID_SIMULATION_MODE", "False").lower() == "true"
+        
+        # Check if auto-detection is enabled (default to True)
+        self.auto_detect = os.getenv("RFID_AUTO_DETECT", "True").lower() == "true"
         
         # Get vendor and product IDs from environment if available
         vendor_id_str = os.getenv("RFID_VENDOR_ID", "")
@@ -486,6 +660,9 @@ class HybridRFIDReader(QObject):
         # Recent detections to prevent duplicates
         self.recent_detections = {}
         self.detection_timeout = 5  # seconds
+        
+        # Store detected reader info
+        self.detected_reader = None
 
     def start_detection(self):
         """Start RFID detection."""
@@ -499,16 +676,29 @@ class HybridRFIDReader(QObject):
         self.reader_thread = RFIDReaderThread(
             vendor_id=self.vendor_id,
             product_id=self.product_id,
-            simulate=self.simulation_mode
+            simulate=self.simulation_mode,
+            auto_detect=self.auto_detect
         )
         
         # Connect signals
         self.reader_thread.card_detected.connect(self._handle_card_detection)
         self.reader_thread.status_changed.connect(self.status_changed)
         self.reader_thread.error_occurred.connect(self.error_occurred)
+        self.reader_thread.reader_detected.connect(self._handle_reader_detection)
         
         # Start the thread
         self.reader_thread.start()
+    
+    def _handle_reader_detection(self, reader_info):
+        """
+        Handle reader detection events from the reader thread.
+        
+        Args:
+            reader_info (dict): Detected reader information
+        """
+        self.detected_reader = reader_info
+        self.reader_detected.emit(reader_info)
+        self.logger.info(f"RFID reader detected: {reader_info['name']} ({reader_info['vendor']:04x}:{reader_info['product']:04x})")
 
     def _handle_card_detection(self, rfid_id):
         """
