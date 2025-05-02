@@ -202,8 +202,8 @@ class ConsultationRequestPanel(QWidget):
             # Create request data
             request_data = {
                 'request_id': str(uuid.uuid4()),
-                'student_id': self.student.get('id'),
-                'student_name': self.student.get('name'),
+                'student_id': self.student.student_id,
+                'student_name': self.student.name,
                 'faculty_id': faculty.get('id'),
                 'faculty_name': faculty.get('name'),
                 'course_code': self.course_code_input.text().strip(),
@@ -232,8 +232,8 @@ class ConsultationRequestPanel(QWidget):
             # Publish via MQTT for real-time notification
             mqtt_payload = {
                 'request_id': request_id,
-                'student_id': self.student.get('id'),
-                'student_name': self.student.get('name'),
+                'student_id': self.student.student_id,
+                'student_name': self.student.name,
                 'topic': request_data['topic'],
                 'timestamp': datetime.now().isoformat()
             }
@@ -244,7 +244,7 @@ class ConsultationRequestPanel(QWidget):
             # Add audit log
             self.db_manager.add_audit_log({
                 'action': 'consultation_request',
-                'user_id': self.student.get('id'),
+                'user_id': self.student.student_id,
                 'details': f"Requested consultation with {faculty.get('name')} on {request_data['topic']}",
                 'timestamp': datetime.now().isoformat()
             })

@@ -172,7 +172,14 @@ To enable on-screen keyboard:
    KEYBOARD_AUTO_POPUP=True
    ```
 
-3. **On-screen Keyboard Not Appearing**:\n   - Check `KEYBOARD_ENABLED` is set to `True` in `.env`\n   - Verify the selected keyboard (`squeekboard` recommended) is installed via `apt`\n   - For Squeekboard issues, check D-Bus is functioning correctly\n\n4. **RFID Reader Issues:**\n   - Ensure the user running the application is in the `input` group (see Installation steps).\n   - Verify the reader is detected by the system (`lsusb`, check `/dev/input/`).\n   - If using `evdev`, ensure the reader appears as a keyboard-like device. The application might need `sudo` if permissions are incorrect, but the `input` group is preferred.\n\n## Contributing
+3. **On-screen Keyboard Not Appearing**:\n   - Check `KEYBOARD_ENABLED` is set to `True` in `.env`\n   - Verify the selected keyboard (`squeekboard` recommended) is installed via `apt`\n   - For Squeekboard issues, check D-Bus is functioning correctly\n\n4. **RFID Reader Issues:**\n   - Ensure the user running the application is in the `input` group (see Installation steps).\n   - Verify the reader is detected by the system (`lsusb`, check `/dev/input/`).\n   - If using `evdev`, ensure the reader appears as a keyboard-like device. The application might need `sudo` if permissions are incorrect, but the `input` group is preferred.\n\n## Documentation
+
+- **[Database Setup Guide](DATABASE_SETUP_GUIDE.md)**: Comprehensive instructions for setting up and configuring the database
+- **[Production Checklist](PRODUCTION_CHECKLIST.md)**: Requirements for production deployment
+- **[User Manual](docs/user_manual.md)**: Detailed usage instructions for all user types
+- **[Hardware Schematics](docs/hardware_schematics.md)**: Technical details about the hardware components
+
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 

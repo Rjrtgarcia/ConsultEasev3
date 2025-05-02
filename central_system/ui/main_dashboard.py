@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLa
                             QFormLayout, QMessageBox, QSizePolicy, QSpacerItem)
 from PyQt6.QtCore import Qt, QTimer, pyqtSlot, QSize
 from PyQt6.QtGui import QFont, QPixmap, QIcon, QColor
+import uuid
 
 from data.models import Faculty, Student, ConsultationRequest
 from utils.logger import get_logger
@@ -212,7 +213,7 @@ class MainDashboard(QMainWindow):
         header_layout.addItem(QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
         
         # Student info
-        student_info = QLabel(f"Welcome, {self.student.get('name', 'Student')}")
+        student_info = QLabel(f"Welcome, {self.student.name}")
         student_info.setObjectName("student-info")
         header_layout.addWidget(student_info)
         
@@ -547,7 +548,7 @@ class MainDashboard(QMainWindow):
                                "Please select a faculty member.")
             return
             
-        faculty_id = self.faculty_combo.itemData(faculty_index)
+        selected_faculty = self.faculty_combo.itemData(faculty_index)
         faculty_name = self.faculty_combo.itemText(faculty_index)
         
         # Get course code
@@ -562,13 +563,15 @@ class MainDashboard(QMainWindow):
             
         # Create request data
         request_data = {
-            'student_id': self.student.get('id'),
-            'faculty_id': faculty_id,
-            'request_text': request_text,
-            'course_code': course_code,
+            'request_id': str(uuid.uuid4()),
+            'student_id': self.student.student_id,
+            'student_name': self.student.name,
+            'faculty_id': selected_faculty.get('id'),
+            'faculty_name': selected_faculty.get('name'),
+            'course': self.course_input.text().strip(),
+            'details': self.request_text.toPlainText().strip(),
             'status': 'pending',
-            'created_at': datetime.now().isoformat(),
-            'updated_at': datetime.now().isoformat()
+            'timestamp': datetime.now().isoformat()
         }
         
         self.logger.info(f"Submitting consultation request: {request_data}")

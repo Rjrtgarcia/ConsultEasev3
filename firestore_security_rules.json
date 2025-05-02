@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny access
+    match /{document=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+    
+    // Faculty collection
+    match /faculty/{facultyId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && (request.auth.token.admin == true || request.auth.uid == facultyId);
+      
+      // Special rule for faculty status
+      match /status/{statusDoc} {
+        allow read: if true;
+        allow write: if request.auth != null && (request.auth.token.admin == true || request.auth.uid == facultyId);
+      }
+    }
+    
+    // Students collection
+    match /students/{studentId} {
+      allow read: if request.auth != null && (request.auth.token.admin == true || request.auth.uid == studentId);
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Consultation requests collection
+    match /consultation_requests/{requestId} {
+      allow read: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.uid == resource.data.faculty_id ||
+        request.auth.uid == resource.data.student_id
+      );
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.uid == resource.data.faculty_id ||
+        (request.auth.uid == resource.data.student_id && !resource.data.exists())
+      );
+    }
+    
+    // Consultations collection
+    match /consultations/{consultationId} {
+      allow read: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.uid == resource.data.faculty_id ||
+        request.auth.uid == resource.data.student_id
+      );
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.uid == resource.data.faculty_id
+      );
+    }
+    
+    // Offices collection
+    match /offices/{officeId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Admin users collection
+    match /admin_users/{adminId} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // System settings collection
+    match /system_settings/{settingId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Audit logs collection
+    match /audit_logs/{logId} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null;
+    }
+  }
+} 
