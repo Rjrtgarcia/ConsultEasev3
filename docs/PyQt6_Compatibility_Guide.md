@@ -74,11 +74,13 @@ splitter = QSplitter(Qt.Orientation.Horizontal)
 **PyQt5:**
 ```python
 frame.setFrameShape(QFrame.StyledPanel)
+frame.setFrameShadow(QFrame.Raised)
 ```
 
 **PyQt6 (correct):**
 ```python
 frame.setFrameShape(QFrame.Shape.StyledPanel)
+frame.setFrameShadow(QFrame.Shadow.Raised)
 ```
 
 ## Import Changes

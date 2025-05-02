@@ -41,8 +41,8 @@ class FacultyCard(QFrame):
     def init_ui(self):
         """Initialize the user interface."""
         self.setObjectName("faculty-card")
-        self.setFrameShape(QFrame.StyledPanel)
-        self.setFrameShadow(QFrame.Raised)
+        self.setFrameShape(QFrame.Shape.StyledPanel)
+        self.setFrameShadow(QFrame.Shadow.Raised)
         self.setMinimumHeight(120)
         self.setMaximumHeight(120)
         
@@ -127,8 +127,8 @@ class NotificationItem(QFrame):
     def init_ui(self):
         """Initialize the user interface."""
         self.setObjectName("notification-item")
-        self.setFrameShape(QFrame.StyledPanel)
-        self.setFrameShadow(QFrame.Raised)
+        self.setFrameShape(QFrame.Shape.StyledPanel)
+        self.setFrameShadow(QFrame.Shadow.Raised)
         self.setMinimumHeight(50)
         self.setMaximumHeight(80)
         

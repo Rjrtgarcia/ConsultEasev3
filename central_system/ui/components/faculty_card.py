@@ -58,6 +58,8 @@ class FacultyCard(QFrame):
     def init_ui(self):
         """Initialize the user interface."""
         self.setObjectName("faculty-card")
+        self.setFrameShape(QFrame.Shape.StyledPanel)
+        self.setFrameShadow(QFrame.Shadow.Raised)
         self.setMinimumHeight(140)  # Increased height to accommodate department
         self.setMaximumHeight(140)
         
