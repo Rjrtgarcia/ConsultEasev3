@@ -11,10 +11,10 @@ QWidget {
     font-size: 12px;
 }
 
-/* Custom Properties */
-* {
+/* Remove problematic global alignment property */
+/* * {
     qproperty-alignment: AlignCenter;
-}
+} */
 
 /* Main Window */
 QMainWindow {
@@ -39,7 +39,6 @@ QFrame {
 /* Labels */
 QLabel {
     color: #FFFFFF;
-    qproperty-alignment: AlignLeft;
 }
 
 QLabel#logo-label {

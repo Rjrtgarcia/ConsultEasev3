@@ -73,11 +73,20 @@ class LoginScreen(QWidget):
         logo_size = 120 if is_touchscreen else 64
         logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui", "assets", "logo.png")
         
+        # Create logo label regardless of whether the image exists
+        logo_label = QLabel()
+        logo_label.setObjectName("logo")
+        
         if os.path.exists(logo_path):
-            logo_label = QLabel()
-            logo_label.setObjectName("logo")
             logo_pixmap = QPixmap(logo_path)
             logo_label.setPixmap(logo_pixmap.scaled(logo_size, logo_size, Qt.AspectRatioMode.KeepAspectRatio))
+        else:
+            # If logo image doesn't exist, set a text placeholder
+            logo_label.setText("CE")
+            logo_label.setStyleSheet("background-color: #4ECDC4; color: #121212; font-weight: bold; border-radius: 32px;")
+            logo_label.setFixedSize(logo_size, logo_size)
+            logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            
         header_layout.addWidget(logo_label)
         
         logo_text = QLabel("ConsultEase")

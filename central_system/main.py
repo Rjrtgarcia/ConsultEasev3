@@ -35,9 +35,26 @@ def main():
     Main application entry point.
     """
     try:
-        # Load environment variables
-        env_path = Path(__file__).parent / "config.env"
-        load_dotenv(dotenv_path=env_path)
+        # Load environment variables from .env file
+        # Check multiple potential locations
+        env_paths = [
+            Path(__file__).parent / ".env",           # central_system/.env (current directory)
+            Path(__file__).parent.parent / ".env",    # Parent directory .env file
+            Path(__file__).parent / "config.env"      # Legacy location
+        ]
+        
+        # Try to load from the first .env file found
+        env_loaded = False
+        for env_path in env_paths:
+            if env_path.exists():
+                load_dotenv(dotenv_path=env_path)
+                print(f"Loaded environment from: {env_path}")
+                env_loaded = True
+                break
+                
+        if not env_loaded:
+            print("No .env file found. Using default values.")
+            load_dotenv()  # Try default .env in current directory
         
         # Setup logging
         log_level = os.getenv("LOG_LEVEL", "INFO")

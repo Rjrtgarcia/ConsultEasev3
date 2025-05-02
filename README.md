@@ -64,15 +64,59 @@ ConsultEase is a comprehensive faculty consultation management system designed t
    ```
 
 5. **Configure the system:**
-   - Copy `config.env.example` to `config.env`
-   - Edit `config.env` with your Firebase credentials and MQTT settings
-   - **Important:** For Raspberry Pi OS Bookworm (Wayland default), set `KEYBOARD_TYPE=squeekboard` in `config.env`.
+   - Copy `.env.sample` to `.env` in the central_system directory
+   - Edit `.env` with your Firebase credentials, MQTT settings, and other configuration options
+   - **Important:** For Raspberry Pi OS Bookworm (Wayland default), set `KEYBOARD_TYPE=squeekboard` in `.env`.
    - Configure other settings as needed (e.g., `TOUCHSCREEN_ENABLED`).
 
 6. **Run the application:**
    ```bash
    python central_system/main.py
    ```
+
+### Environment Configuration
+
+ConsultEase uses a `.env` file for configuration. A sample configuration file (`.env.sample`) is provided in the central_system directory. To set up your environment:
+
+1. Copy the sample configuration:
+   ```bash
+   cp central_system/.env.sample central_system/.env
+   ```
+
+2. Edit the `.env` file to match your environment:
+   ```
+   # Application Settings
+   APP_NAME=ConsultEase
+   DEBUG_MODE=True/False  # Set to False in production
+   TOUCHSCREEN_ENABLED=True/False
+   KEYBOARD_ENABLED=True/False
+   THEME=Dark  # Options: Light, Dark, High Contrast
+
+   # Database Settings
+   DB_TYPE=firebase
+   DB_URL=https://your-firebase-rtdb.firebaseio.com/
+   DB_API_KEY=your-api-key-here
+
+   # MQTT Settings
+   MQTT_BROKER=localhost
+   MQTT_PORT=1883
+   MQTT_CLIENT_ID=central_system
+   MQTT_USERNAME=your-username
+   MQTT_PASSWORD=your-password
+
+   # Hardware Settings
+   RFID_SIMULATION=True/False  # Set to False for real RFID reader
+   RFID_PORT=COM3  # Serial port for RFID reader if applicable
+
+   # Logging
+   LOG_LEVEL=INFO  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+   LOG_TO_FILE=True/False
+   ```
+
+3. The application automatically searches for the `.env` file in these locations (in order):
+   - `central_system/.env` (recommended)
+   - Project root `.env`
+   - Legacy `central_system/config.env`
 
 ### Automatic Startup (Optional)
 
@@ -114,13 +158,13 @@ ConsultEase is optimized for touchscreen interaction with the following features
 - Large, touch-friendly UI elements and controls
 - On-screen keyboard support with automatic popup/hide behavior
 - Support for both Squeekboard (recommended for Wayland/Bookworm) and Onboard virtual keyboards
-- Configurable keyboard settings in `config.env`
+- Configurable keyboard settings in `.env`
 
 To enable on-screen keyboard:
 
 1. Ensure the system dependencies (including `squeekboard` or `onboard`) were installed during setup (see Prerequisites).
 
-2. Configure keyboard settings in `config.env`:
+2. Configure keyboard settings in `.env`:
    ```ini
    TOUCHSCREEN_ENABLED=True
    KEYBOARD_ENABLED=True
@@ -128,7 +172,7 @@ To enable on-screen keyboard:
    KEYBOARD_AUTO_POPUP=True
    ```
 
-3. **On-screen Keyboard Not Appearing**:\n   - Check `KEYBOARD_ENABLED` is set to `True` in `config.env`\n   - Verify the selected keyboard (`squeekboard` recommended) is installed via `apt`\n   - For Squeekboard issues, check D-Bus is functioning correctly\n\n4. **RFID Reader Issues:**\n   - Ensure the user running the application is in the `input` group (see Installation steps).\n   - Verify the reader is detected by the system (`lsusb`, check `/dev/input/`).\n   - If using `evdev`, ensure the reader appears as a keyboard-like device. The application might need `sudo` if permissions are incorrect, but the `input` group is preferred.\n\n## Contributing
+3. **On-screen Keyboard Not Appearing**:\n   - Check `KEYBOARD_ENABLED` is set to `True` in `.env`\n   - Verify the selected keyboard (`squeekboard` recommended) is installed via `apt`\n   - For Squeekboard issues, check D-Bus is functioning correctly\n\n4. **RFID Reader Issues:**\n   - Ensure the user running the application is in the `input` group (see Installation steps).\n   - Verify the reader is detected by the system (`lsusb`, check `/dev/input/`).\n   - If using `evdev`, ensure the reader appears as a keyboard-like device. The application might need `sudo` if permissions are incorrect, but the `input` group is preferred.\n\n## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
